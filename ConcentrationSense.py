@@ -39,7 +39,7 @@ class concentration:
       def __init__(self, run_length=60, verbose=False):
         self.concentration_high = 0 
         self.concentration_low = 0 
-        self.concnetration_sum = 0
+        self.concentration_sum = 0
         self.verbose = verbose
         self.start_time = None
         self.run_length = run_length
