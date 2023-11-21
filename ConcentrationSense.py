@@ -8,6 +8,12 @@ from neurolArthur.BCI import generic_BCI, automl_BCI
 from neurolArthur import BCI_tools
 from neurolArthur.models import classification_tools
 
+'''
+Define the calibrator, transformer, and classifier.
+
+We are recording the alpha_low and alpha_high bands for all 8 electrodes. 
+Our classifier returns a simple High or Low based on the calibration which is currently set to the 10th percentile
+'''
 clb = lambda stream:  BCI_tools.band_power_calibrator(stream, ['EEG 1', 'EEG 2', 'EEG 3', 'EEG 4', 'EEG 5', 'EEG 6', 'EEG 7', 'EEG 8'], 'unicorn', bands=['alpha_low', 'alpha_high'],
                                                         percentile=10, recording_length=10, epoch_len=1, inter_window_interval=0.25)
 gen_tfrm = lambda buffer, clb_info: BCI_tools.band_power_transformer(buffer, clb_info, ['EEG 1', 'EEG 2', 'EEG 3', 'EEG 4', 'EEG 5', 'EEG 6', 'EEG 7', 'EEG 8'], 'unicorn', bands=['alpha_low', 'alpha_high'],
@@ -16,9 +22,6 @@ gen_tfrm = lambda buffer, clb_info: BCI_tools.band_power_transformer(buffer, clb
 def clf(clf_input, clb_info):
 
     clf_input = clf_input[:clb_info.shape[0]]
-
-
-
     binary_label = classification_tools.threshold_clf(clf_input, clb_info, clf_consolidator='all')
 
     label = classification_tools.decode_prediction(
@@ -26,12 +29,18 @@ def clf(clf_input, clb_info):
  
     return label
 
-#for every 100 lows in a row =+ 1, if there is +5 notifiy the user, for every 100 highes rest to 0
+'''
+Create a class called concentration.
+
+Initializes with a user specified run length in second (default 60s).
+updateConcentration function records everytime tehre are 100 highs or lows in a row and updates 'sum" accordingly
+Exits program onece a sum of 5 is reached or the time limit is reached
+'''
 class concentration:
     def __init__(self, run_length=60, verbose=False):
         self.concentration_high = 0 
         self.concentration_low = 0 
-        self.concnetration_sum = 0
+        self.concentration_sum = 0
         self.verbose = verbose
         self.start_time = None
         self.run_length = run_length
@@ -66,15 +75,28 @@ class concentration:
           
             
             
-
-#no interval notications, 
-
+#no interval notications
 
 
+'''
+Collect LSL stream
+'''
 streams1 = resolve_stream("name='Unicorn'")
 inlet = StreamInlet(streams1[0])
 stream = streams.lsl_stream(inlet, buffer_length=1024)
+
+
+
+'''
+Initialize concentration class
+'''
 concentration1 = concentration(run_length = 60, verbose = False)
+
+
+
+'''
+Initialize BCI, Calibrate BCI, Run BCI
+'''
 concentration_BCI = generic_BCI(clf, transformer=gen_tfrm, action=concentration1.updateCondentration, calibrator=clb)
 concentration_BCI.calibrate(stream)
 concentration_BCI.run(stream)
