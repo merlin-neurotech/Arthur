@@ -26,6 +26,51 @@ def clf(clf_input, clb_info):
  
     return label
 
+#for every 100 lows in a row =+ 1, if there is +5 notifiy the user, for every 100 highes rest to 0
+class concentration:
+    def __init__(self, run_length=60, verbose=False):
+        self.concentration_high = 0 
+        self.concentration_low = 0 
+        self.concnetration_sum = 0
+        self.verbose = verbose
+        self.start_time = None
+        self.run_length = run_length
+        self.timer_start = False
+    def updateConcentration(self, EEG_output):
+
+        if not self.timer_start:
+            self.start_time = time.time()
+            self.timer_start = True
+
+        current_time = time.time()
+
+        if current_time - self.start_time > self.run_length:
+            print("Time's up!")
+            exit() 
+    
+        if EEG_output == 'LOW':
+            self.concentration_low += 1
+            self.concentration_high = 0
+            if self.concentration_low == 100:
+              self.concentration_sum += 1
+              self.concentration_low = 0
+        elif EEG_output == 'HIGH':
+            self.concentration_high += 1
+            self.concentration_low = 0
+            if self.concentration_high == 100:
+              self.concentration_sum -= 1
+              self.concentration_high = 0
+        if self.concentration_sum == 5:
+            print("Concentration has fallen too much")
+            exit()
+          
+            
+            
+
+#no interval notications, 
+
+
+
 streams1 = resolve_stream("name='Unicorn'")
 inlet = StreamInlet(streams1[0])
 stream = streams.lsl_stream(inlet, buffer_length=1024)
@@ -34,45 +79,3 @@ concentration_BCI = generic_BCI(clf, transformer=gen_tfrm, action=concentration1
 concentration_BCI.calibrate(stream)
 concentration_BCI.run(stream)
 
-#for every 100 lows in a row =+ 1, if there is +5 notifiy the user, for every 100 highes rest to 0
-class concentration:
-      def __init__(self, run_length=60, verbose=False):
-        self.concentration_high = 0 
-        self.concentration_low = 0 
-        self.concnetration_sum = 0
-        self.verbose = verbose
-        self.start_time = None
-        self.run_length = run_length
-        self.timer_start = False
-  def updateConcentration(self, EEG_output):
-
-        if not self.timer_start:
-            self.start_time = time.time()
-            self.timer_start = True
-
-        current_time = time.time()
-
-        if current_time - self.start_time > self.run_length
-            print("Time's up!")
-            exit() 
-    
-        if EEG_output == 'LOW':
-            self.concentration_low += 1
-            self.concentration_high = 0
-            if self.concentration_low == 100
-              self.concentration_sum += 1
-              self.concentration_low = 0
-        elif EEG_output == 'HIGH':
-            self.concentration_high += 1
-            self.concentration_low = 0
-            if self.concentration_high == 100
-              self.concentration_sum -= 1
-              self.concentration_high = 0
-        if self.concentration_sum == 5
-            print("Concentration has fallen too much")
-            exit()
-          
-            
-            
-
-#no interval notications, 
