@@ -9,7 +9,7 @@ from neurolArthur import BCI_tools
 from neurolArthur.models import classification_tools
 
 '''
-Define the calibrator, transformer, and classifier. add coment
+Define the calibrator, transformer, and classifier. 
 
 We are recording the alpha_low and alpha_high bands for all 8 electrodes. 
 Our classifier returns a simple High or Low based on the calibration which is currently set to the 10th percentile
@@ -36,6 +36,13 @@ Initializes with a user specified run length in second (default 60s).
 updateConcentration function records everytime tehre are 100 highs or lows in a row and updates 'sum" accordingly
 Exits program onece a sum of 5 is reached or the time limit is reached
 '''
+
+####def intro(prompt):
+    ###askedTime = int(input("How many minutes would you like to concentrate for?  "))
+    ###prompt1 = askedTime*60
+    ###return time
+
+
 class concentration:
     def __init__(self, run_length=60, verbose=False):
         self.concentration_high = 0 
@@ -58,17 +65,21 @@ class concentration:
             exit() 
     
         if EEG_output == 'LOW':
+            print("Low")
             self.concentration_low += 1
             self.concentration_high = 0
             if self.concentration_low == 100:
               self.concentration_sum += 1
               self.concentration_low = 0
-        elif EEG_output == 'HIGH':
+            print (self.concentration_sum)
+        if EEG_output == 'HIGH':
+            print("High")
             self.concentration_high += 1
             self.concentration_low = 0
             if self.concentration_high == 100:
               self.concentration_sum -= 1
               self.concentration_high = 0
+            print (self.concentration_sum)
         if self.concentration_sum == 5:
             print("Concentration has fallen too much")
             exit()
@@ -97,7 +108,8 @@ concentration1 = concentration(run_length = 60, verbose = False)
 '''
 Initialize BCI, Calibrate BCI, Run BCI
 '''
-concentration_BCI = generic_BCI(clf, transformer=gen_tfrm, action=concentration1.updateCondentration, calibrator=clb)
+concentration_BCI = generic_BCI(clf, transformer=gen_tfrm, action=concentration1.updateConcentration, calibrator=clb)
 concentration_BCI.calibrate(stream)
 concentration_BCI.run(stream)
+
 
