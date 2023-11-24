@@ -36,14 +36,15 @@ Initializes with a user specified run length in second (default 60s).
 updateConcentration function records everytime tehre are 100 highs or lows in a row and updates 'sum" accordingly
 Exits program onece a sum of 5 is reached or the time limit is reached
 '''
-def intro(prompt1):
-    askedTime = int(input("How many minutes would you like to concentrate for?  "))
-    prompt1 = askedTime*60
 
-    print(prompt1)
+####def intro(prompt):
+    ###askedTime = int(input("How many minutes would you like to concentrate for?  "))
+    ###prompt1 = askedTime*60
+    ###return time
+
 
 class concentration:
-    def __init__(self, run_length=(prompt1), verbose=False):
+    def __init__(self, run_length=60, verbose=False):
         self.concentration_high = 0 
         self.concentration_low = 0 
         self.concentration_sum = 0
