@@ -15,7 +15,7 @@ We are recording the alpha_low and alpha_high bands for all 8 electrodes.
 Our classifier returns a simple High or Low based on the calibration which is currently set to the 10th percentile
 '''
 clb = lambda stream:  BCI_tools.band_power_calibrator(stream, ['EEG 1', 'EEG 2', 'EEG 3', 'EEG 4', 'EEG 5', 'EEG 6', 'EEG 7', 'EEG 8'], 'unicorn', bands=['alpha_low', 'alpha_high'],
-                                                        percentile=10, recording_length=10, epoch_len=1, inter_window_interval=0.25)
+                                                        percentile=50, recording_length=10, epoch_len=1, inter_window_interval=0.25)
 gen_tfrm = lambda buffer, clb_info: BCI_tools.band_power_transformer(buffer, clb_info, ['EEG 1', 'EEG 2', 'EEG 3', 'EEG 4', 'EEG 5', 'EEG 6', 'EEG 7', 'EEG 8'], 'unicorn', bands=['alpha_low', 'alpha_high'],
                                                         epoch_len=1)
 
@@ -37,10 +37,12 @@ updateConcentration function records everytime tehre are 100 highs or lows in a 
 Exits program onece a sum of 5 is reached or the time limit is reached
 '''
 
-####def intro(prompt):
-    ###askedTime = int(input("How many minutes would you like to concentrate for?  "))
-    ###prompt1 = askedTime*60
-    ###return time
+def intro():
+    askedTime = int(input("How many minutes would you like to concentrate for?"))
+
+    prompt1 = askedTime*60
+    print("For the calibration period, keep your hands on your thighs and close your eyes.")
+    return prompt1
 
 
 class concentration:
@@ -52,6 +54,8 @@ class concentration:
         self.start_time = None
         self.run_length = run_length
         self.timer_start = False
+        self.highcount = 0
+        self.lowcount = 0
     def updateConcentration(self, EEG_output):
 
         if not self.timer_start:
@@ -62,10 +66,13 @@ class concentration:
 
         if current_time - self.start_time > self.run_length:
             print("Time's up!")
+            print("High: ", self.highcount)
+            print("Low: ", self.lowcount)
             exit() 
     
         if EEG_output == 'LOW':
             print("Low")
+            self.lowcount += 1
             self.concentration_low += 1
             self.concentration_high = 0
             if self.concentration_low == 100:
@@ -74,14 +81,18 @@ class concentration:
             print (self.concentration_sum)
         if EEG_output == 'HIGH':
             print("High")
+            self.highcount += 1
             self.concentration_high += 1
             self.concentration_low = 0
-            if self.concentration_high == 100:
+            if self.concentration_high >= 100 and self.concentration_sum > 0:
               self.concentration_sum -= 1
               self.concentration_high = 0
             print (self.concentration_sum)
         if self.concentration_sum == 5:
             print("Concentration has fallen too much")
+            print("High: ", self.highcount)
+            print("Low: ", self.lowcount)
+
             exit()
           
             
@@ -96,12 +107,12 @@ streams1 = resolve_stream("name='Unicorn'")
 inlet = StreamInlet(streams1[0])
 stream = streams.lsl_stream(inlet, buffer_length=1024)
 
-
+runtime = intro()
 
 '''
 Initialize concentration class
 '''
-concentration1 = concentration(run_length = 60, verbose = False)
+concentration1 = concentration(run_length = runtime, verbose = False)
 
 
 
