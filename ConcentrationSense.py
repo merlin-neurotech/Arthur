@@ -9,7 +9,7 @@ from neurolArthur import BCI_tools
 from neurolArthur.models import classification_tools
 
 '''
-Define the calibrator, transformer, and classifier. 
+Define the calibrator, transformer, and classifier. gfuyt
 
 We are recording the alpha_low and alpha_high bands for all 8 electrodes. 
 Our classifier returns a simple High or Low based on the calibration which is currently set to the 10th percentile
