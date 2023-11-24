@@ -112,3 +112,4 @@ concentration_BCI = generic_BCI(clf, transformer=gen_tfrm, action=concentration1
 concentration_BCI.calibrate(stream)
 concentration_BCI.run(stream)
 
+
