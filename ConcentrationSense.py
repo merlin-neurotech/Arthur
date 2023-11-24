@@ -9,7 +9,7 @@ from neurolArthur import BCI_tools
 from neurolArthur.models import classification_tools
 
 '''
-Define the calibrator, transformer, and classifier. gfuyt
+Define the calibrator, transformer, and classifier. 
 
 We are recording the alpha_low and alpha_high bands for all 8 electrodes. 
 Our classifier returns a simple High or Low based on the calibration which is currently set to the 10th percentile
@@ -33,7 +33,7 @@ def clf(clf_input, clb_info):
 Create a class called concentration.
 
 Initializes with a user specified run length in second (default 60s).
-updateConcentration function records everytime tehre are 100 highs or lows in a row and updates 'sum" accordingly
+updateConcentration function records everytime tehre are 100 highs or lows in a row and updates 'sum" accordingly gfuyrt
 Exits program onece a sum of 5 is reached or the time limit is reached
 '''
 
