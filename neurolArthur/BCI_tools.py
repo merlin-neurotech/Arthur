@@ -167,6 +167,14 @@ def band_power_calibrator(stream, channels, device, bands, percentile=50,
 
     # calculate given percentile of band power
     clb_info = np.squeeze(np.percentile(band_power, percentile, axis=0))
+    clb_info1 = np.squeeze(np.percentile(band_power, 1, axis=0))
+    clb_info2 = np.squeeze(np.percentile(band_power, 25, axis=0))
+    clb_info3 = np.squeeze(np.percentile(band_power, 75, axis=0))
+    clb_info4 = np.squeeze(np.percentile(band_power, 99, axis=0))
+    print('\nPercentile = 1:',clb_info1)
+    print('\nPercentile = 25:',clb_info2)
+    print('\nPercentile = 75:',clb_info3)
+    print('\nPercentile = 99:',clb_info4)
 
     print(f'\nComputed the following power percentiles: \n{clb_info}')
 

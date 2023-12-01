@@ -15,7 +15,7 @@ We are recording the alpha_low and alpha_high bands for all 8 electrodes.
 Our classifier returns a simple High or Low based on the calibration which is currently set to the 10th percentile
 '''
 clb = lambda stream:  BCI_tools.band_power_calibrator(stream, ['EEG 1', 'EEG 2', 'EEG 3', 'EEG 4', 'EEG 5', 'EEG 6', 'EEG 7', 'EEG 8'], 'unicorn', bands=['alpha_low', 'alpha_high'],
-                                                        percentile=50, recording_length=10, epoch_len=1, inter_window_interval=0.25)
+                                                        percentile=10, recording_length=10, epoch_len=1, inter_window_interval=0.25)
 gen_tfrm = lambda buffer, clb_info: BCI_tools.band_power_transformer(buffer, clb_info, ['EEG 1', 'EEG 2', 'EEG 3', 'EEG 4', 'EEG 5', 'EEG 6', 'EEG 7', 'EEG 8'], 'unicorn', bands=['alpha_low', 'alpha_high'],
                                                         epoch_len=1)
 
